@@ -36,3 +36,13 @@ def delete_todo(request, pk):
     todo.delete()
     return redirect(request.META.get("HTTP_REFERER", "todo_list"))
 
+
+def update_todo(request, pk):
+    todo = get_object_or_404(Todo, pk=pk)
+    if request.method == "POST":
+        new_text = request.POST.get("text", "").strip()
+        if new_text:
+            todo.text = new_text
+            todo.save()
+        return redirect("todo_list")
+    return render(request, "todo_update.html", {"todo": todo})

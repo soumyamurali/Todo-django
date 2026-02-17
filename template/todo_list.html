@@ -11,19 +11,21 @@
     <div class="wrapper">
         <h1>Todo List</h1>
 
+        <!-- Add form -->
         <form class="add-form" method="post">
             {% csrf_token %}
             <input type="text" name="text" placeholder="Add a new task...">
             <button type="submit" name="action" value="add">Add</button>
         </form>
 
+        <!-- Filters -->
         <div class="filters">
             <a href="?filter=all" class="{% if filter == 'all' %}active{% endif %}">All</a>
             <a href="?filter=pending" class="{% if filter == 'pending' %}active{% endif %}">Pending</a>
             <a href="?filter=completed" class="{% if filter == 'completed' %}active{% endif %}">Completed</a>
         </div>
 
-        
+        <!-- Todo list -->
         <div class="todo-list">
             {% for item in todos %}
                 <div class="todo-item">
@@ -38,6 +40,9 @@
                                 {% if item.is_completed %}Completed{% else %}Complete{% endif %}
                             </button>
                         </form>
+
+                        <!-- Update button -->
+                        <a href="{% url 'todo_update' item.id %}" class="btn-update">Update</a>
 
                         <form method="post" action="{% url 'todo_delete' item.id %}">
                             {% csrf_token %}
