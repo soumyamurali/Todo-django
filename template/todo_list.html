@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo List</title>
+    <link rel="stylesheet" href="{% static 'css/todo.css' %}">
+</head>
+<body>
+<div class="page">
+    <div class="wrapper">
+        <h1>Todo List</h1>
+
+        <form class="add-form" method="post">
+            {% csrf_token %}
+            <input type="text" name="text" placeholder="Add a new task...">
+            <button type="submit" name="action" value="add">Add</button>
+        </form>
+
+        <div class="filters">
+            <a href="?filter=all" class="{% if filter == 'all' %}active{% endif %}">All</a>
+            <a href="?filter=pending" class="{% if filter == 'pending' %}active{% endif %}">Pending</a>
+            <a href="?filter=completed" class="{% if filter == 'completed' %}active{% endif %}">Completed</a>
+        </div>
+
+        
+        <div class="todo-list">
+            {% for item in todos %}
+                <div class="todo-item">
+                    <span class="todo-text {% if item.is_completed %}completed{% endif %}">
+                        {{ item.text }}
+                    </span>
+
+                    <div class="todo-actions">
+                        <form method="post" action="{% url 'todo_toggle' item.id %}">
+                            {% csrf_token %}
+                            <button class="btn-complete" type="submit">
+                                {% if item.is_completed %}Completed{% else %}Complete{% endif %}
+                            </button>
+                        </form>
+
+                        <form method="post" action="{% url 'todo_delete' item.id %}">
+                            {% csrf_token %}
+                            <button class="btn-delete" type="submit">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="empty">No tasks in this view.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</body>
+</html>
